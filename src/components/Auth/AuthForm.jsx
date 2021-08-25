@@ -7,59 +7,56 @@ import { apiKey } from './../../config';
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [enteredEmail, setEnteredEmail] = useState('');
+  const [enteredPassword, setEnteredPassword] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
-  };
-  const emailHandler = (e) => {
-    setEmail(e.target.value);
-  };
-  const passwordHandler = (e) => {
-    setPassword(e.target.value);
+    // setIsLogin(!isLogin);
   };
 
   const submitHandler = async (event) => {
     event.preventDefault();
-    console.log('sending form');
+    console.log('sending');
     setIsLoading(true);
 
-    // take data and send to endpoint
-
+    // paimti email ir password ir siusti i endpoint
+    // https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
+    let url;
     if (isLogin) {
       // Prijungti esama vartotoja
       console.log('Login action');
-      setIsLoading(false);
-      return;
+      url =
+        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' +
+        apiKey;
     }
     if (!isLogin) {
-      // Sukurti vartotoja
+      // SUkurti vartotja
       console.log('Sign up action');
-      console.log(email, password);
+      url =
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' +
+        apiKey;
+      console.log(enteredEmail, enteredPassword);
       // galima validacija
-
-      try {
-        const response = await axios.post(
-          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
-          {
-            email,
-            password,
-            returnSecureToken: true,
-          }
-        );
-        console.log(response);
-      } catch (error) {
-        console.log(error.response.data.error.message);
-        alert('Error ' + error.response.data.error.message);
-      }
-      setIsLoading(false);
-      return;
+    }
+    try {
+      const response = await axios.post(url, {
+        email: enteredEmail,
+        password: enteredPassword,
+        returnSecureToken: true,
+      });
+      console.log('response OK', response.data);
+    } catch (error) {
+      console.log('Catch block');
+      console.log(error.response.data.error.message);
+      alert('Error: ' + error.response.data.error.message);
     }
 
-    // gauti email ir password
+    setIsLoading(false);
+
+    // gauti email ir slaptazodi ir pateikti issiuntimu
   };
 
   return (
@@ -69,27 +66,27 @@ const AuthForm = () => {
         <div className={classes.control}>
           <label htmlFor="email">Your Email</label>
           <input
-            value={email}
-            onChange={emailHandler}
             type="email"
             id="email"
             required
+            value={enteredEmail}
+            onChange={(event) => setEnteredEmail(event.target.value)}
           />
         </div>
         <div className={classes.control}>
           <label htmlFor="password">Your Password</label>
           <input
-            value={password}
-            onChange={passwordHandler}
             type="password"
             id="password"
-            minLength="3"
             required
+            minLength="3"
+            value={enteredPassword}
+            onChange={(event) => setEnteredPassword(event.target.value)}
           />
         </div>
         <div className={classes.actions}>
           {isLoading ? (
-            <button disabled>Loading</button>
+            <button disabled>Loading...</button>
           ) : (
             <button>{isLogin ? 'Login' : 'Create Account'}</button>
           )}
