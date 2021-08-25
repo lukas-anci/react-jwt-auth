@@ -10,6 +10,8 @@ const AuthForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
   };
@@ -23,12 +25,14 @@ const AuthForm = () => {
   const submitHandler = async (event) => {
     event.preventDefault();
     console.log('sending form');
+    setIsLoading(true);
 
     // take data and send to endpoint
 
     if (isLogin) {
       // Prijungti esama vartotoja
       console.log('Login action');
+      setIsLoading(false);
       return;
     }
     if (!isLogin) {
@@ -36,15 +40,22 @@ const AuthForm = () => {
       console.log('Sign up action');
       console.log(email, password);
       // galima validacija
-      const response = await axios.post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
-        {
-          email,
-          password,
-          returnSecureToken: true,
-        }
-      );
-      console.log(response);
+
+      try {
+        const response = await axios.post(
+          `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`,
+          {
+            email,
+            password,
+            returnSecureToken: true,
+          }
+        );
+        console.log(response);
+      } catch (error) {
+        console.log(error.response.data.error.message);
+        alert('Error ' + error.response.data.error.message);
+      }
+      setIsLoading(false);
       return;
     }
 
@@ -72,11 +83,16 @@ const AuthForm = () => {
             onChange={passwordHandler}
             type="password"
             id="password"
+            minLength="3"
             required
           />
         </div>
         <div className={classes.actions}>
-          <button>{isLogin ? 'Login' : 'Create Account'}</button>
+          {isLoading ? (
+            <button disabled>Loading</button>
+          ) : (
+            <button>{isLogin ? 'Login' : 'Create Account'}</button>
+          )}
           <button
             type="button"
             className={classes.toggle}
