@@ -53,6 +53,7 @@ const AuthForm = () => {
 
     if (token !== false) {
       authCtx.login(token);
+
       // rediret
       setIsLoading(false);
       history.replace('/');
