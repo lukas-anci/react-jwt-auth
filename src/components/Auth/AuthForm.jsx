@@ -45,7 +45,7 @@ const AuthForm = () => {
       // galima validacija
     }
 
-    const token = await sendData(url, {
+    const { idToken: token } = await sendData(url, {
       email: enteredEmail,
       password: enteredPassword,
       returnSecureToken: true,

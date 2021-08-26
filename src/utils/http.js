@@ -4,8 +4,8 @@ import { apiKey } from '../config';
 export const sendData = async (url, data) => {
   try {
     const response = await axios.post(url + apiKey, data);
-    // console.log(response.data.idToken);
-    return response.data.idToken;
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.log('Catch block');
     console.log(error.response.data.error.message);
