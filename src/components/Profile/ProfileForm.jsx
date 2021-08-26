@@ -2,8 +2,10 @@ import classes from './ProfileForm.module.css';
 import { useState, useContext } from 'react';
 import AuthContext from '../../store/auth-context';
 import { sendData } from '../../utils/http';
+import { useHistory } from 'react-router-dom';
 
 const ProfileForm = () => {
+  const history = useHistory();
   const authCtx = useContext(AuthContext);
   // gauti input reiksme
   const [newPassword, setNewPassword] = useState('');
@@ -24,6 +26,9 @@ const ProfileForm = () => {
         returnSecureToken: true,
       }
     );
+    if (token) {
+      history.push('/');
+    }
     // console.log('token after pass change', token);
   };
   return (

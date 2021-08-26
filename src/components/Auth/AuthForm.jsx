@@ -35,7 +35,6 @@ const AuthForm = () => {
       console.log('Login action');
       url =
         'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=';
-      history.push('/');
     }
     if (!isLogin) {
       // SUkurti vartotja
@@ -54,6 +53,10 @@ const AuthForm = () => {
 
     if (token !== false) {
       authCtx.login(token);
+      // rediret
+      setIsLoading(false);
+      history.replace('/');
+      return;
     }
 
     setIsLoading(false);
