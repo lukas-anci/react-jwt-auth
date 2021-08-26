@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 import classes from './AuthForm.module.css';
 import { apiKey } from './../../config';
@@ -7,6 +8,7 @@ import AuthContext from '../../store/auth-context';
 import { sendData } from './../../utils/http';
 
 const AuthForm = () => {
+  const history = useHistory();
   const authCtx = useContext(AuthContext);
   const [isLogin, setIsLogin] = useState(true);
 
@@ -33,6 +35,7 @@ const AuthForm = () => {
       console.log('Login action');
       url =
         'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=';
+      history.push('/');
     }
     if (!isLogin) {
       // SUkurti vartotja
